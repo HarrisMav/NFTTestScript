@@ -30,6 +30,7 @@ public class VenlyTest extends Hooks {
         driver.findElement(By.id("password")).sendKeys("1234Abcd!");
         driver.findElement(By.name("login")).click();
         driver.switchTo().window(winHandleBefore);
+        WaitHelper.waitForPageToLoad(driver);
         Helper.findNonAffordableItemUSDC(driver).findElement(By.tagName("venly-button")).click();
 
         for (final WebElement errorMessage : driver.findElements(By.className("funds-error"))){
