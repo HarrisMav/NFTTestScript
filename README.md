@@ -20,3 +20,13 @@ reappear though it never happened.
 2. Running the app headless is **very** inconsistent. This has always been a problem with Selenium based apps, 90% chance there are waits that 
 need to be added while executing every action. Though for the purpose of this exercise won't do that but accomodated a utility method that would
 , reason this is not done here is because it takes hours of debugging to analyse what **exactly** you're waiting for and it seems out of scope. 
+
+## Things that can be done better
+
+1. The selectors aren't to the standard I'd want them, main reason is that there aren't ids on the page, though I can add ids
+wherever necessary if I have access to the front-end code.
+2. No page objects but rather abstract certain actions and have locators inputted on the test. When a page doesn't have ids
+page objects tend to be a bit better since you are naming things and you hide ugly selectors inside that name. Though I am not
+a fan of that model, would rather pass the selectors and use the logic to do the rest of the work inside a helper method. To
+achieve that I need to analyse the application more, so right now my methods aren't generic enough, but the more I work on and 
+analyse the UI, they become more detailed. 
