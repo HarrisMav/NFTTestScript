@@ -31,7 +31,7 @@ public abstract class Hooks {
         final List<String> chromeOptionsList = new ArrayList<>();
 //        chromeOptionsList.add("--headless");
         chromeOptionsList.add("start-maximized");
-//        chromeOptionsList.add("--incognito");
+        chromeOptionsList.add("--incognito");
 
         return chromeOptionsList;
     }

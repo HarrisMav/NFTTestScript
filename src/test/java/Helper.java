@@ -27,9 +27,27 @@ public class Helper {
         elementsWithSameLinkText.get(0).click();
     }
 
-    public static void switchHandles(final WebDriver driver, final Set<String> handles){
+    public static void switchHandles(final WebDriver driver){
         for(String winHandle : driver.getWindowHandles()){
             driver.switchTo().window(winHandle);
         }
+    }
+
+    public static WebElement findNonAffordableItemUSDC(final WebDriver driver){
+        final String walletInUSDC = driver.findElement(By.cssSelector(".USDC.amount")).getText();
+        final double usdcAmount = Double.parseDouble(walletInUSDC);
+
+        if (usdcAmount == 0) {
+            final WebElement actionsElement = driver.findElement(By.cssSelector(".price__amount--value")).findElement(By.xpath("../../../.."));
+            return actionsElement;
+        }
+        for (final WebElement priceElement : driver.findElements(By.cssSelector(".price__amount--value"))){
+            final double priceTemp = Double.parseDouble(priceElement.getText());
+            if (priceTemp <= usdcAmount){
+                return priceElement.findElement(By.xpath(".//venly-preview-card-actions/..")).findElement(By.xpath("../../../.."));
+            }
+        }
+        Assert.fail("The user can afford everything");
+        return null;
     }
 }

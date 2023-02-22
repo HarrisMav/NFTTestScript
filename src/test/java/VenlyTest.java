@@ -1,6 +1,8 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Test;
 
@@ -14,27 +16,29 @@ public class VenlyTest extends Hooks {
     }
     @Test
     public void test(){
-        driver.get("https://venly.market/home");
+        driver.get("https://staging.venly.market/home");
+        boolean testPass = false;
         final String winHandleBefore = driver.getWindowHandle();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(webDriver -> ((JavascriptExecutor) webDriver)
-                .executeScript("return document.readyState")
-                .equals("complete"));
-        Helper.clickButtonByLinkText(driver, "Login / Sign up");
+        final String expectedErrorMessage = "You don't have enough credits to purchase this item. Buy credits and try again.";
 
-        Helper.switchHandles(driver, driver.getWindowHandles());
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(webDriver -> ((JavascriptExecutor) webDriver)
-                        .executeScript("return document.readyState")
-                        .equals("complete"));
+        WaitHelper.waitForPageToLoad(driver);
+        Helper.clickButtonByLinkText(driver, "Login / Sign up");
+        Helper.switchHandles(driver);
+        WaitHelper.waitForPageToLoad(driver);
         driver.findElement(By.linkText("or Using Email")).click();
         driver.findElement(By.id("username")).sendKeys("haristsp1@gmail.com");
         driver.findElement(By.id("password")).sendKeys("1234Abcd!");
         driver.findElement(By.name("login")).click();
-
-        driver.close();
-
         driver.switchTo().window(winHandleBefore);
-        System.out.println();
+        Helper.findNonAffordableItemUSDC(driver).findElement(By.tagName("venly-button")).click();
+
+        for (final WebElement errorMessage : driver.findElements(By.className("funds-error"))){
+            if (errorMessage.getText().equals(expectedErrorMessage)) {
+                testPass = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(testPass, "The error message did not appear");
     }
 }
